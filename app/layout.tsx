@@ -7,8 +7,8 @@ import { Toaster } from "sonner"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Team Score Tracker",
-  description: "Track team scores during the Summercamp tournament",
+  title: "Summercamp 2025",
+  description: "Scoreboard for Summercamp 2025 - Rise Up",
 }
 
 export default function RootLayout({
