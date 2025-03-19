@@ -10,10 +10,7 @@ if (!process.env.GOOGLE_CLIENT_SECRET) {
   throw new Error('Missing GOOGLE_CLIENT_SECRET')
 }
 
-const ALLOWED_EMAILS = [
-  "mfesevur@gmail.com",
-  "jiskadehoop@gmail.com"
-]
+const ALLOWED_EMAILS = process.env.ALLOWED_EMAILS?.split(',')
 
 export const authOptions: NextAuthOptions = {
   providers: [
