@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { getServerSession } from "next-auth"
-import { authOptions } from "./api/auth/[...nextauth]/route"
+import { authOptions } from "@/lib/auth"
 import { LoginButton, LogoutButton } from "./components/auth-buttons"
 
 export const dynamic = 'force-dynamic'
