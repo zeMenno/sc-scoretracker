@@ -7,6 +7,8 @@ import Link from "next/link"
 import { format } from "date-fns"
 import { deleteEventAction } from "@/lib/actions"
 
+export const dynamic = 'force-dynamic'
+
 interface EventWithTeam extends Event {
   teamName: string
 }
@@ -45,30 +47,35 @@ export default async function EventsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {sortedEvents.map((event) => (
-              <div key={event.id} className="flex items-center justify-between p-4 rounded-lg border">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: teams.find(t => t.id === event.teamId)?.color || '#3b82f6' }} />
-                    <span className="font-medium">{teams.find(t => t.id === event.teamId)?.name}</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{event.description}</p>
-                </div>
-                <div className="flex items-center gap-4">
-                  <span className={event.points >= 0 ? "text-green-600" : "text-red-600"}>
-                    {event.points >= 0 ? '+' : ''}{event.points}
-                  </span>
-                  <form action={deleteEventAction}>
-                    <input type="hidden" name="id" value={event.id} />
-                    <Button type="submit" variant="ghost" size="icon">
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  </form>
-                </div>
-              </div>
-            ))}
-          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Team</TableHead>
+                <TableHead>Event</TableHead>
+                <TableHead>Punten</TableHead>
+                <TableHead>Datum</TableHead>
+                <TableHead className="w-[100px]"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {sortedEvents.map((event) => (
+                <TableRow key={event.id}>
+                  <TableCell>{event.teamName}</TableCell>
+                  <TableCell>{event.description}</TableCell>
+                  <TableCell>{event.points}</TableCell>
+                  <TableCell>{format(new Date(event.createdAt), "dd/MM/yyyy HH:mm")}</TableCell>
+                  <TableCell>
+                    <form action={deleteEventAction}>
+                      <input type="hidden" name="id" value={event.id} />
+                      <Button variant="ghost" size="icon" type="submit" className="h-8 w-8 text-destructive">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </form>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     </div>
