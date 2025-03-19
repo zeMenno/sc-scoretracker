@@ -6,6 +6,9 @@ import { ArrowLeft, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { format } from "date-fns"
 import { deleteEventAction } from "@/lib/actions"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
+import { nl } from "date-fns/locale"
 
 export const dynamic = 'force-dynamic'
 
@@ -15,6 +18,7 @@ interface EventWithTeam extends Event {
 
 export default async function EventsPage() {
   const teams = await getAllTeams()
+  const session = await getServerSession(authOptions)
 
   // Get all events from all teams
   const allEvents = await Promise.all(
@@ -50,28 +54,32 @@ export default async function EventsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Team</TableHead>
                 <TableHead>Event</TableHead>
+                <TableHead>Team</TableHead>
                 <TableHead>Punten</TableHead>
                 <TableHead>Datum</TableHead>
-                <TableHead className="w-[100px]"></TableHead>
+                {session && <TableHead>Toegevoegd door</TableHead>}
+                {session && <TableHead className="w-[100px]"></TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
               {sortedEvents.map((event) => (
                 <TableRow key={event.id}>
+                  <TableCell className="font-medium">{event.description}</TableCell>
                   <TableCell>{event.teamName}</TableCell>
-                  <TableCell>{event.description}</TableCell>
                   <TableCell>{event.points}</TableCell>
-                  <TableCell>{format(new Date(event.createdAt), "dd/MM/yyyy HH:mm")}</TableCell>
-                  <TableCell>
-                    <form action={deleteEventAction}>
-                      <input type="hidden" name="id" value={event.id} />
-                      <Button variant="ghost" size="icon" type="submit" className="h-8 w-8 text-destructive">
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </form>
-                  </TableCell>
+                  <TableCell>{format(new Date(event.createdAt), "dd/MM/yyyy HH:mm", { locale: nl })}</TableCell>
+                  {session && <TableCell>{event.creatorEmail}</TableCell>}
+                  {session && (
+                    <TableCell>
+                      <form action={deleteEventAction}>
+                        <input type="hidden" name="id" value={event.id} />
+                        <Button variant="ghost" size="icon" type="submit" className="h-8 w-8 text-destructive">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </form>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>

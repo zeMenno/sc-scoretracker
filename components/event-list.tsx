@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button"
 import type { Event } from "@/lib/redis"
 import { deleteEventAction } from "@/lib/actions"
 import { Trash2, Plus, Minus } from "lucide-react"
+import { format } from "date-fns"
+import { nl } from "date-fns/locale"
 
 interface EventListProps {
   events: Event[]
@@ -36,7 +38,10 @@ export function EventList({ events }: EventListProps) {
           </CardHeader>
           <CardContent className="p-4 pt-0">
             <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>{new Date(event.createdAt).toLocaleString()}</span>
+              <span>{format(new Date(event.createdAt), "dd/MM/yyyy HH:mm", { locale: nl })}</span>
+              <p className="text-xs text-muted-foreground">
+                Toegevoegd door: {event.creatorEmail}
+              </p>
               <form action={deleteEventAction}>
                 <input type="hidden" name="id" value={event.id} />
                 <Button variant="ghost" size="sm" type="submit" className="h-8 px-2 text-destructive">

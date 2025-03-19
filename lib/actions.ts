@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { createTeam, deleteTeam, createEvent, deleteEvent, createMultiTeamEvent, redis, type TeamPoints, getAllTeams, getAllEvents } from "./redis"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 
 export async function createTeamAction(formData: FormData) {
   const name = formData.get("name") as string
@@ -53,54 +55,61 @@ export async function deleteTeamAction(formData: FormData) {
 }
 
 export async function createEventAction(formData: FormData) {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.email) {
+    throw new Error("Not authenticated")
+  }
+
   const teamId = formData.get("teamId") as string
   const description = formData.get("description") as string
   const pointsStr = formData.get("points") as string
   const points = Number.parseInt(pointsStr, 10)
 
   if (!description || description.trim() === "") {
-    return { error: "Event description is required" }
+    throw new Error("Event description is required")
   }
 
   if (isNaN(points)) {
-    return { error: "Points must be a number" }
+    throw new Error("Points must be a number")
   }
 
   try {
-    await createEvent(teamId, description.trim(), points)
+    await createEvent(teamId, description.trim(), points, session.user.email)
     revalidatePath(`/teams/${teamId}`)
     revalidatePath("/")
-    return { success: true }
   } catch (error) {
-    return { error: "Failed to create event" }
+    throw new Error("Failed to create event")
   }
 }
 
 export async function createMultiTeamEventAction(formData: FormData) {
-  const teamPointsData = formData.get("teamPointsData") as string
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.email) {
+    throw new Error("Not authenticated")
+  }
+
   const description = formData.get("description") as string
-
-  if (!teamPointsData) {
-    return { error: "Team points data is required" }
-  }
-
-  let teamPoints: TeamPoints[] = []
-  try {
-    teamPoints = JSON.parse(teamPointsData)
-  } catch (e) {
-    return { error: "Invalid team points data format" }
-  }
-
-  if (teamPoints.length === 0) {
-    return { error: "At least one team must be selected" }
-  }
+  const teamPointsDataStr = formData.get("teamPointsData") as string
+  const teamPointsData = JSON.parse(teamPointsDataStr) as TeamPoints[]
 
   if (!description || description.trim() === "") {
-    return { error: "Event description is required" }
+    throw new Error("Event description is required")
+  }
+
+  if (teamPointsData.length === 0) {
+    throw new Error("Select at least one team")
   }
 
   try {
-    await createMultiTeamEvent(teamPoints, description.trim())
+    // Create a separate event for each team with their respective points
+    for (const teamPoint of teamPointsData) {
+      await createEvent(
+        teamPoint.teamId,
+        description.trim(),
+        teamPoint.points,
+        session.user.email
+      )
+    }
     revalidatePath("/")
     return { success: true }
   } catch (error) {

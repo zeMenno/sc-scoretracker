@@ -18,6 +18,7 @@ export interface Event {
   description: string
   points: number
   createdAt: string
+  creatorEmail: string
 }
 
 export interface TeamPoints {
@@ -117,7 +118,7 @@ export async function getTeamScore(teamId: string) {
   return events.reduce((total, event) => total + Number(event.points), 0)
 }
 
-export async function createEvent(teamId: string, description: string, points: number) {
+export async function createEvent(teamId: string, description: string, points: number, creatorEmail: string) {
   // Generate a unique ID
   const id = crypto.randomUUID()
 
@@ -127,6 +128,7 @@ export async function createEvent(teamId: string, description: string, points: n
     description,
     points,
     createdAt: new Date().toISOString(),
+    creatorEmail,
   })
 
   // Add event ID to the team's event set
@@ -135,29 +137,25 @@ export async function createEvent(teamId: string, description: string, points: n
   return id
 }
 
-export async function createMultiTeamEvent(teamPoints: TeamPoints[], description: string) {
-  const timestamp = new Date().toISOString()
+export async function createMultiTeamEvent(teamIds: string[], description: string, points: number, creatorEmail: string) {
+  // Generate a unique ID
+  const id = crypto.randomUUID()
 
-  // Create events for each team with their specific points
-  await Promise.all(
-    teamPoints.map(async ({ teamId, points }) => {
-      // Generate a unique ID
-      const id = crypto.randomUUID()
+  // Create event hash
+  await redis.hset(`event:${id}`, {
+    teamId: teamIds[0], // Store the first teamId for compatibility
+    description,
+    points,
+    createdAt: new Date().toISOString(),
+    creatorEmail,
+  })
 
-      // Create event hash
-      await redis.hset(`event:${id}`, {
-        teamId,
-        description,
-        points,
-        createdAt: timestamp,
-      })
+  // Add event ID to each team's event set
+  for (const teamId of teamIds) {
+    await redis.sadd(`team:${teamId}:events`, id)
+  }
 
-      // Add event ID to the team's event set
-      await redis.sadd(`team:${teamId}:events`, id)
-    }),
-  )
-
-  return teamPoints.map((tp) => tp.teamId)
+  return id
 }
 
 export async function deleteEvent(id: string) {
