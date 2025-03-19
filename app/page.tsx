@@ -24,7 +24,7 @@ export default async function Home() {
   const session = await getServerSession(authOptions)
 
   return (
-    <div className="container mx-auto py-6 px-4 md:py-10 md:px-6 space-y-6">
+    <div className="container mx-auto py-6 px-6 md:py-10 md:px-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Summercamp</h1>
@@ -81,18 +81,43 @@ export default async function Home() {
               </div>
             </>
           ) : (
-            <div className="flex items-center gap-2">
-              <Button variant="outline" asChild>
-                <Link href="/events">
-                  <History className="mr-2 h-4 w-4" />
-                  Events
-                </Link>
-              </Button>
-              <LoginButton />
-            </div>
+            <>
+              <div className="hidden md:flex items-center gap-2">
+                <Button variant="outline" asChild>
+                  <Link href="/events">
+                    <History className="mr-2 h-4 w-4" />
+                    Events
+                  </Link>
+                </Button>
+                <LoginButton />
+              </div>
+              <div className="md:hidden">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="icon">
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <Link href="/events">
+                        <History className="mr-2 h-4 w-4" />
+                        Events
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <LoginButton />
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </>
           )}
         </div>
       </div>
+      <p className="text-sm text-muted-foreground italic">
+        "Maar wie hoopt op de HEER krijgt nieuwe kracht: hij slaat zijn vleugels uit als een adelaar, hij loopt, maar wordt niet moe, hij rent, maar raakt niet uitgeput." - Jesaja 40:31
+      </p>
 
       {teams.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 text-center">
