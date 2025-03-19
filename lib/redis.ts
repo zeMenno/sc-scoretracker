@@ -180,26 +180,15 @@ export async function deleteEvent(id: string) {
   return event.teamId
 }
 
-export async function getAllEvents() {
-  // Get all team IDs
-  const teamIds = await redis.smembers("teams")
-  
-  // Get all events for each team
+export async function getAllEvents(): Promise<Event[]> {
+  const teams = await getAllTeams()
   const allEvents = await Promise.all(
-    teamIds.map(async (teamId) => {
-      const events = await getTeamEvents(teamId)
-      const team = await getTeamById(teamId)
-      return events.map(event => ({
-        ...event,
-        teamName: team?.name || 'Unknown Team'
-      }))
+    teams.map(async (team) => {
+      const events = await getTeamEvents(team.id)
+      return events
     })
   )
-  
-  // Flatten the array and sort by timestamp
-  return allEvents
-    .flat()
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+  return allEvents.flat()
 }
 
 export async function clearAllData() {

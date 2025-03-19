@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { TeamCard } from "@/components/team-card"
-import { getAllTeams } from "@/lib/redis"
+import { getAllTeams, getAllEvents } from "@/lib/redis"
 import Link from "next/link"
 import { PlusCircle, Trophy, Award, List, MoreVertical, Download } from "lucide-react"
 import {
@@ -13,11 +13,14 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { LoginButton, LogoutButton } from "./components/auth-buttons"
 import { ClearDatabaseButton } from "@/components/clear-database-button"
+import { ScoreProgressionChart } from "@/components/score-progression-chart"
+import { Separator } from "@/components/ui/separator"
 
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
   const teams = await getAllTeams()
+  const events = await getAllEvents()
   const session = await getServerSession(authOptions)
 
   return (
@@ -115,6 +118,10 @@ export default async function Home() {
           </div>
         </div>
       )}
+
+      <Separator className="my-8" />
+
+      <ScoreProgressionChart teams={teams} events={events} />
     </div>
   )
 }
