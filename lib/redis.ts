@@ -180,12 +180,15 @@ export async function deleteEvent(id: string) {
   return event.teamId
 }
 
-export async function getAllEvents(): Promise<Event[]> {
+export async function getAllEvents(): Promise<(Event & { teamName: string })[]> {
   const teams = await getAllTeams()
   const allEvents = await Promise.all(
     teams.map(async (team) => {
       const events = await getTeamEvents(team.id)
-      return events
+      return events.map(event => ({
+        ...event,
+        teamName: team.name
+      }))
     })
   )
   return allEvents.flat()
