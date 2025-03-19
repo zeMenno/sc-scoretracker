@@ -11,7 +11,8 @@ if (!process.env.GOOGLE_CLIENT_SECRET) {
 }
 
 const ALLOWED_EMAILS = [
-  "mfesevur@gmail.com"
+  "mfesevur@gmail.com",
+  "jiskadehoop@gmail.com"
 ]
 
 export const authOptions: NextAuthOptions = {
