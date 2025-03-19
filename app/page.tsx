@@ -12,6 +12,7 @@ import {
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { LoginButton, LogoutButton } from "./components/auth-buttons"
+import { ClearDatabaseButton } from "@/components/clear-database-button"
 
 export const dynamic = 'force-dynamic'
 
@@ -66,6 +67,7 @@ export default async function Home() {
                       Export Events
                     </Link>
                   </DropdownMenuItem>
+                  {session.user.email === "mfesevur@gmail.com" && <ClearDatabaseButton />}
                   <DropdownMenuItem className="md:hidden p-0">
                     <LogoutButton />
                   </DropdownMenuItem>

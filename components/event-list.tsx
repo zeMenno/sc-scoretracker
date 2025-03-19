@@ -40,7 +40,7 @@ export function EventList({ events }: EventListProps) {
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>{format(new Date(event.createdAt), "dd/MM/yyyy HH:mm", { locale: nl })}</span>
               <p className="text-xs text-muted-foreground">
-                Toegevoegd door: {event.creatorEmail}
+                Toegevoegd door: {event.creatorName}
               </p>
               <form action={deleteEventAction}>
                 <input type="hidden" name="id" value={event.id} />

@@ -69,7 +69,7 @@ export default async function EventsPage() {
                   <TableCell>{event.teamName}</TableCell>
                   <TableCell>{event.points}</TableCell>
                   <TableCell>{format(new Date(event.createdAt), "dd/MM/yyyy HH:mm", { locale: nl })}</TableCell>
-                  {session && <TableCell>{event.creatorEmail}</TableCell>}
+                  {session && <TableCell>{event.creatorName}</TableCell>}
                   {session && (
                     <TableCell>
                       <form action={deleteEventAction}>

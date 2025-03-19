@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
-import { createTeam, deleteTeam, createEvent, deleteEvent, createMultiTeamEvent, redis, type TeamPoints, getAllTeams, getAllEvents } from "./redis"
+import { createTeam, deleteTeam, createEvent, deleteEvent, createMultiTeamEvent, redis, type TeamPoints, getAllTeams, getAllEvents, clearAllData } from "./redis"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 
@@ -56,7 +56,7 @@ export async function deleteTeamAction(formData: FormData) {
 
 export async function createEventAction(formData: FormData) {
   const session = await getServerSession(authOptions)
-  if (!session?.user?.email) {
+  if (!session?.user?.name) {
     throw new Error("Not authenticated")
   }
 
@@ -74,7 +74,7 @@ export async function createEventAction(formData: FormData) {
   }
 
   try {
-    await createEvent(teamId, description.trim(), points, session.user.email)
+    await createEvent(teamId, description.trim(), points, session.user.name)
     revalidatePath(`/teams/${teamId}`)
     revalidatePath("/")
   } catch (error) {
@@ -84,7 +84,7 @@ export async function createEventAction(formData: FormData) {
 
 export async function createMultiTeamEventAction(formData: FormData) {
   const session = await getServerSession(authOptions)
-  if (!session?.user?.email) {
+  if (!session?.user?.name) {
     throw new Error("Not authenticated")
   }
 
@@ -107,7 +107,7 @@ export async function createMultiTeamEventAction(formData: FormData) {
         teamPoint.teamId,
         description.trim(),
         teamPoint.points,
-        session.user.email
+        session.user.name
       )
     }
     revalidatePath("/")
@@ -191,12 +191,13 @@ export async function exportEventsAction() {
   try {
     const events = await getAllEvents()
     const csvRows = [
-      ["Datum", "Team", "Beschrijving", "Punten"], // Header row
+      ["Datum", "Team", "Beschrijving", "Punten", "Toegevoegd door"], // Header row
       ...events.map(event => [
         new Date(event.createdAt).toLocaleString("nl-NL"),
         event.teamName,
         event.description,
-        event.points
+        event.points,
+        event.creatorName
       ])
     ]
     
@@ -208,6 +209,28 @@ export async function exportEventsAction() {
   } catch (error) {
     console.error("Error exporting events:", error)
     throw new Error("Fout bij het exporteren van events")
+  }
+}
+
+export async function clearDatabaseAction() {
+  const session = await getServerSession(authOptions)
+  
+  if (!session?.user?.email) {
+    throw new Error("Not authenticated")
+  }
+
+  // Only allow specific email to clear the database
+  if (session.user.email !== "mfesevur@gmail.com") {
+    throw new Error("Unauthorized")
+  }
+
+  try {
+    await clearAllData()
+    revalidatePath("/")
+    return { success: true }
+  } catch (error) {
+    console.error("Error clearing database:", error)
+    throw new Error("Failed to clear database")
   }
 }
 

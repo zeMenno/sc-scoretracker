@@ -18,7 +18,7 @@ export interface Event {
   description: string
   points: number
   createdAt: string
-  creatorEmail: string
+  creatorName: string
 }
 
 export interface TeamPoints {
@@ -118,7 +118,7 @@ export async function getTeamScore(teamId: string) {
   return events.reduce((total, event) => total + Number(event.points), 0)
 }
 
-export async function createEvent(teamId: string, description: string, points: number, creatorEmail: string) {
+export async function createEvent(teamId: string, description: string, points: number, creatorName: string) {
   // Generate a unique ID
   const id = crypto.randomUUID()
 
@@ -128,16 +128,16 @@ export async function createEvent(teamId: string, description: string, points: n
     description,
     points,
     createdAt: new Date().toISOString(),
-    creatorEmail,
+    creatorName,
   })
 
-  // Add event ID to the team's event set
+  // Add event ID to team's event set
   await redis.sadd(`team:${teamId}:events`, id)
 
   return id
 }
 
-export async function createMultiTeamEvent(teamIds: string[], description: string, points: number, creatorEmail: string) {
+export async function createMultiTeamEvent(teamIds: string[], description: string, points: number, creatorName: string) {
   // Generate a unique ID
   const id = crypto.randomUUID()
 
@@ -147,7 +147,7 @@ export async function createMultiTeamEvent(teamIds: string[], description: strin
     description,
     points,
     createdAt: new Date().toISOString(),
-    creatorEmail,
+    creatorName,
   })
 
   // Add event ID to each team's event set
@@ -200,5 +200,29 @@ export async function getAllEvents() {
   return allEvents
     .flat()
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+}
+
+export async function clearAllData() {
+  // Get all team IDs
+  const teamIds = await redis.smembers("teams")
+  
+  // Delete all events for each team
+  for (const teamId of teamIds) {
+    const eventIds = await redis.smembers(`team:${teamId}:events`)
+    for (const eventId of eventIds) {
+      await redis.del(`event:${eventId}`)
+    }
+    await redis.del(`team:${teamId}:events`)
+  }
+  
+  // Delete all teams
+  for (const teamId of teamIds) {
+    await redis.del(`team:${teamId}`)
+  }
+  
+  // Delete the teams set
+  await redis.del("teams")
+  
+  return true
 }
 
