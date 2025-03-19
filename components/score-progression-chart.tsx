@@ -2,7 +2,7 @@
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
 import type { Team, Event } from "@/lib/redis"
-import { format } from "date-fns"
+import { format, isSameDay, differenceInMinutes, startOfMinute, addMinutes } from "date-fns"
 import { nl } from "date-fns/locale"
 
 interface ScoreProgressionChartProps {
@@ -12,40 +12,66 @@ interface ScoreProgressionChartProps {
 
 interface ChartData {
   timestamp: string
-  [key: string]: string | number // teamId -> score
+  fullTimestamp: Date
+  [key: string]: string | number | Date // teamId -> score
 }
 
 export function ScoreProgressionChart({ teams, events }: ScoreProgressionChartProps) {
-  // Create a map of team scores over time
-  const scoreHistory = new Map<string, number>()
-  const chartData: ChartData[] = []
-
   // Sort events by timestamp
   const sortedEvents = [...events].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
 
-  // Initialize scores for all teams
-  teams.forEach(team => {
-    scoreHistory.set(team.id, 0)
-  })
+  // Create 30-minute interval data points
+  const intervalData: ChartData[] = []
+  if (sortedEvents.length > 0) {
+    const startTime = startOfMinute(new Date(sortedEvents[0].createdAt))
+    const endTime = addMinutes(new Date(sortedEvents[sortedEvents.length - 1].createdAt), 30)
 
-  // Create data points for each event
-  sortedEvents.forEach(event => {
-    const currentScores = { ...Object.fromEntries(scoreHistory) }
-    const teamScore = currentScores[event.teamId] || 0
-    currentScores[event.teamId] = teamScore + event.points
-    scoreHistory.set(event.teamId, currentScores[event.teamId])
+    let currentTime = startTime
+    while (currentTime <= endTime) {
+      // Calculate scores up to current time
+      const scores = new Map<string, number>()
+      teams.forEach(team => {
+        scores.set(team.id, 0)
+      })
 
-    chartData.push({
-      timestamp: format(new Date(event.createdAt), "HH:mm", { locale: nl }),
-      ...currentScores
-    })
-  })
+      sortedEvents.forEach(event => {
+        if (new Date(event.createdAt) <= currentTime) {
+          const currentScore = scores.get(event.teamId) || 0
+          scores.set(event.teamId, currentScore + event.points)
+        }
+      })
+
+      intervalData.push({
+        timestamp: format(currentTime, "HH:mm", { locale: nl }),
+        fullTimestamp: currentTime,
+        ...Object.fromEntries(scores)
+      })
+
+      currentTime = addMinutes(currentTime, 30)
+    }
+  }
+
+  // Custom tick formatter to show date only when it changes or when events are more than 15 minutes apart
+  const formatTick = (index: number) => {
+    if (index === 0) return format(intervalData[index].fullTimestamp, "dd/MM HH:mm", { locale: nl })
+    
+    const currentDate = intervalData[index].fullTimestamp
+    const prevDate = intervalData[index - 1].fullTimestamp
+    
+    const minutesDiff = differenceInMinutes(currentDate, prevDate)
+    
+    if (minutesDiff < 15) {
+      return format(currentDate, "HH:mm", { locale: nl })
+    }
+    
+    return format(currentDate, "dd/MM HH:mm", { locale: nl })
+  }
 
   return (
     <div className="w-full h-[400px] mt-8">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
-          data={chartData}
+          data={intervalData}
           margin={{
             top: 5,
             right: 30,
@@ -54,9 +80,23 @@ export function ScoreProgressionChart({ teams, events }: ScoreProgressionChartPr
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="timestamp" />
+          <XAxis 
+            dataKey="timestamp" 
+            angle={-45}
+            textAnchor="end"
+            height={80}
+            interval={0}
+            tickFormatter={(_, index) => formatTick(index)}
+          />
           <YAxis />
-          <Tooltip />
+          <Tooltip 
+            labelFormatter={(_, payload) => {
+              if (payload && payload[0]) {
+                return format(payload[0].payload.fullTimestamp, "dd/MM HH:mm", { locale: nl })
+              }
+              return ""
+            }}
+          />
           <Legend />
           {teams.map((team) => (
             <Line
