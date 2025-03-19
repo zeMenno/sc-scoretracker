@@ -15,15 +15,22 @@ import { Textarea } from "@/components/ui/textarea"
 
 export const dynamic = 'force-dynamic'
 
-export default async function TeamPage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: Promise<{
+    id: string
+  }>
+}
+
+export default async function TeamPage({ params }: PageProps) {
+  const { id } = await params
   const session = await getServerSession(authOptions)
-  const team = await getTeamById(params.id)
+  const team = await getTeamById(id)
 
   if (!team) {
     notFound()
   }
 
-  const events = await getTeamEvents(params.id)
+  const events = await getTeamEvents(id)
 
   if (!session?.user?.email) {
     redirect('/auth/signin')
@@ -60,7 +67,7 @@ export default async function TeamPage({ params }: { params: { id: string } }) {
           </CardHeader>
           <CardContent>
             <form action={createEventAction} className="space-y-4">
-              <input type="hidden" name="teamId" value={params.id} />
+              <input type="hidden" name="teamId" value={id} />
               <div className="space-y-2">
                 <Label htmlFor="description">Beschrijving</Label>
                 <Textarea id="description" name="description" required />

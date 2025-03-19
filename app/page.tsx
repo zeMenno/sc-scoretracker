@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { TeamCard } from "@/components/team-card"
 import { getAllTeams, getAllEvents } from "@/lib/redis"
 import Link from "next/link"
-import { PlusCircle, Trophy, Award, List, MoreVertical, Download } from "lucide-react"
+import { PlusCircle, Trophy, Award, List, MoreVertical, Download, History } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -81,7 +81,15 @@ export default async function Home() {
               </div>
             </>
           ) : (
-            <LoginButton />
+            <div className="flex items-center gap-2">
+              <Button variant="outline" asChild>
+                <Link href="/events">
+                  <History className="mr-2 h-4 w-4" />
+                  Events
+                </Link>
+              </Button>
+              <LoginButton />
+            </div>
           )}
         </div>
       </div>
