@@ -67,7 +67,7 @@ export function TeamCard({ id, name, score, rank, color, isAuthenticated }: Team
               </div>
             )}
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold mix-blend-difference text-white">{score}</span>
+              <span className="text-2xl font-bold mix-blend-difference text-white">{score}</span> <span className="text-sm text-muted-foreground">Punten</span>
             </div>
             {isAuthenticated && (
               <div className="flex items-center gap-2">
