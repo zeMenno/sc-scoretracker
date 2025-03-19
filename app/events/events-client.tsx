@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, Trash2, ArrowUpDown } from "lucide-react"
 import Link from "next/link"
 import { format } from "date-fns"
-import { deleteEventAction } from "@/lib/actions"
+import { deleteEventAction, updateEventAction } from "@/lib/actions"
 import { nl } from "date-fns/locale"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useState } from "react"
@@ -29,6 +29,8 @@ export function EventsClient({ initialSession, initialTeams, initialEvents }: Ev
   const [selectedTeam, setSelectedTeam] = useState<string>("all")
   const [sortField, setSortField] = useState<SortField>("createdAt")
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
+  const [editingEventId, setEditingEventId] = useState<string | null>(null)
+  const [events, setEvents] = useState<EventWithTeam[]>(initialEvents)
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -39,7 +41,25 @@ export function EventsClient({ initialSession, initialTeams, initialEvents }: Ev
     }
   }
 
-  const filteredAndSortedEvents = initialEvents
+  const handleScoreUpdate = async (eventId: string, newScore: number) => {
+    try {
+      const result = await updateEventAction(eventId, newScore);
+      if (result.success) {
+        // Update the local state with the new score
+        setEvents(events.map(event => 
+          event.id === eventId 
+            ? { ...event, points: newScore }
+            : event
+        ));
+      }
+    } catch (error) {
+      console.error('Error updating event:', error);
+    } finally {
+      setEditingEventId(null);
+    }
+  };
+
+  const filteredAndSortedEvents = events
     .filter(event => selectedTeam === "all" || event.teamId === selectedTeam)
     .sort((a, b) => {
       const aValue = a[sortField]
@@ -157,7 +177,42 @@ export function EventsClient({ initialSession, initialTeams, initialEvents }: Ev
                 <TableRow key={event.id}>
                   <TableCell className="font-medium">{event.description}</TableCell>
                   <TableCell>{event.teamName}</TableCell>
-                  <TableCell>{event.points}</TableCell>
+                  <TableCell 
+                    className="cursor-pointer relative"
+                    onDoubleClick={() => setEditingEventId(event.id)}
+                  >
+                    {editingEventId === event.id ? (
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          defaultValue={event.points}
+                          className="w-20 p-1 border rounded"
+                          autoFocus
+                          onBlur={(e) => handleScoreUpdate(event.id, Number(e.target.value))}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              handleScoreUpdate(event.id, Number(e.currentTarget.value));
+                            } else if (e.key === 'Escape') {
+                              setEditingEventId(null);
+                            }
+                          }}
+                        />
+                        <Button 
+                          size="sm"
+                          className="md:hidden"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            const input = e.currentTarget.previousElementSibling as HTMLInputElement;
+                            handleScoreUpdate(event.id, Number(input.value));
+                          }}
+                        >
+                          Save
+                        </Button>
+                      </div>
+                    ) : (
+                      event.points
+                    )}
+                  </TableCell>
                   <TableCell>{format(new Date(event.createdAt), "dd/MM/yyyy HH:mm", { locale: nl })}</TableCell>
                   {initialSession && <TableCell>{event.creatorName}</TableCell>}
                   {initialSession && (

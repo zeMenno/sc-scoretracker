@@ -1,7 +1,7 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { createTeam, createEvent, deleteEvent, redis, type TeamPoints, getAllTeams, getAllEvents, clearAllData } from "./redis"
+import { createTeam, createEvent, deleteEvent, redis, type TeamPoints, getAllTeams, getAllEvents, clearAllData, updateEvent } from "./redis"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 
@@ -230,6 +230,17 @@ export async function clearDatabaseAction() {
   } catch (error) {
     console.error("Error clearing database:", error)
     throw new Error("Failed to clear database")
+  }
+}
+
+export async function updateEventAction(id: string, points: number) {
+  try {
+    await updateEvent(id, points);
+    revalidatePath('/events');
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating event:', error);
+    return { success: false };
   }
 }
 

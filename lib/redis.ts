@@ -137,6 +137,22 @@ export async function createEvent(teamId: string, description: string, points: n
   return id
 }
 
+export async function updateEvent(id: string, points: number) {
+  try {
+    await redis.hset(`event:${id}`, {
+      points,
+      updatedAt: new Date().toISOString(),
+    });
+    
+    // Return the updated event
+    const event = await redis.hgetall(`event:${id}`);
+    return event;
+  } catch (error) {
+    console.error("Error updating event:", error);
+    throw new Error("Failed to update event");
+  }
+}
+
 export async function createMultiTeamEvent(teamIds: string[], description: string, points: number, creatorName: string) {
   // Generate a unique ID
   const id = crypto.randomUUID()
