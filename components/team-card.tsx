@@ -52,10 +52,11 @@ export function TeamCard({ id, name, score, rank, color, isAuthenticated }: Team
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div 
-              className="flex items-center justify-center w-8 h-8 rounded-full text-white"
+              className="flex items-center justify-center w-8 h-8 rounded-full text-white relative"
               style={{ backgroundColor: color }}
             >
-              {rank}
+              <div className="absolute inset-0 rounded-full" />
+              <span className="relative z-10">{rank}</span>
             </div>
             <CardTitle className="text-lg font-bold">{name}</CardTitle>
           </div>
@@ -66,7 +67,7 @@ export function TeamCard({ id, name, score, rank, color, isAuthenticated }: Team
               </div>
             )}
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold">{score}</span>
+              <span className="text-2xl font-bold mix-blend-difference text-white">{score}</span>
             </div>
             {isAuthenticated && (
               <div className="flex items-center gap-2">

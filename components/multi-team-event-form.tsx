@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { TeamSelector } from "@/components/team-selector"
 import { createMultiTeamEventAction } from "@/lib/actions"
-import { useToast } from "@/hooks/use-toast"
 import { Loader2, PlusCircle } from "lucide-react"
 import type { Team, TeamPoints } from "@/lib/redis"
+import { toast } from "sonner"
 
 interface MultiTeamEventFormProps {
   teams: Team[]
@@ -19,28 +19,19 @@ export function MultiTeamEventForm({ teams }: MultiTeamEventFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [description, setDescription] = useState("")
   const [selectedTeamPoints, setSelectedTeamPoints] = useState<TeamPoints[]>([])
-  const { toast } = useToast()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
     if (selectedTeamPoints.length === 0) {
-      toast({
-        title: "Fout",
-        description: "Selecteer ten minste één team",
-        variant: "destructive",
-      })
+      toast.error("Selecteer ten minste één team")
       return
     }
 
     // Check if any selected team has no points value
     const hasEmptyPoints = selectedTeamPoints.some((tp) => tp.points === undefined || tp.points === null)
     if (hasEmptyPoints) {
-      toast({
-        title: "Fout",
-        description: "Vul punten in voor alle geselecteerde teams",
-        variant: "destructive",
-      })
+      toast.error("Vul punten in voor alle geselecteerde teams")
       return
     }
 
@@ -55,16 +46,9 @@ export function MultiTeamEventForm({ teams }: MultiTeamEventFormProps) {
     setIsSubmitting(false)
 
     if (result.error) {
-      toast({
-        title: "Fout",
-        description: result.error,
-        variant: "destructive",
-      })
+      toast.error(result.error)
     } else {
-      toast({
-        title: "Succes",
-        description: `Event toegevoegd aan ${selectedTeamPoints.length} teams`,
-      })
+      toast.success(`Event toegevoegd aan ${selectedTeamPoints.length} teams`)
       setDescription("")
       setSelectedTeamPoints([])
     }
