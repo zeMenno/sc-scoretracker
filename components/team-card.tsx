@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Trophy, PlusCircle, Trash2, MoreVertical } from "lucide-react"
 import { deleteTeamAction } from "@/lib/actions"
+import { animated } from '@react-spring/web'
+import { useCountUp } from '@/hooks/useCountUp'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +21,16 @@ interface TeamCardProps {
   rank: number
   color: string
   isAuthenticated: boolean
+}
+
+function AnimatedScore({ value }: { value: number }) {
+  const count = useCountUp(value)
+  
+  return (
+    <div className="text-2xl font-bold mix-blend-difference text-white">
+      {count}
+    </div>
+  )
 }
 
 export function TeamCard({ id, name, score, rank, color, isAuthenticated }: TeamCardProps) {
@@ -67,7 +79,8 @@ export function TeamCard({ id, name, score, rank, color, isAuthenticated }: Team
               </div>
             )}
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold mix-blend-difference text-white">{score}</span> <span className="text-sm text-muted-foreground">Punten</span>
+              <AnimatedScore value={score} />
+              <span className="text-sm text-muted-foreground">Punten</span>
             </div>
             {isAuthenticated && (
               <div className="flex items-center gap-2">

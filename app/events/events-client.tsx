@@ -179,7 +179,7 @@ export function EventsClient({ initialSession, initialTeams, initialEvents }: Ev
                   <TableCell>{event.teamName}</TableCell>
                   <TableCell 
                     className="cursor-pointer relative"
-                    onDoubleClick={() => setEditingEventId(event.id)}
+                    onDoubleClick={() => initialSession && setEditingEventId(event.id)}
                   >
                     {editingEventId === event.id ? (
                       <div className="flex items-center gap-2">
