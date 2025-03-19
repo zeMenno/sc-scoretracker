@@ -4,8 +4,9 @@ import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
+import { Suspense } from "react"
 
-export default function AuthError() {
+function ErrorContent() {
   const searchParams = useSearchParams()
   const error = searchParams.get("error")
 
@@ -16,25 +17,52 @@ export default function AuthError() {
   }
 
   return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Inloggen mislukt</CardTitle>
+        <CardDescription>{errorMessage}</CardDescription>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
+        <Button asChild>
+          <Link href="/">
+            Terug naar Dashboard
+          </Link>
+        </Button>
+        <Button variant="outline" asChild>
+          <Link href="/auth/signin">
+            Opnieuw proberen
+          </Link>
+        </Button>
+      </CardContent>
+    </Card>
+  )
+}
+
+export default function AuthError() {
+  return (
     <div className="container mx-auto py-10 max-w-md">
-      <Card>
-        <CardHeader>
-          <CardTitle>Inloggen mislukt</CardTitle>
-          <CardDescription>{errorMessage}</CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          <Button asChild>
-            <Link href="/">
-              Terug naar Dashboard
-            </Link>
-          </Button>
-          <Button variant="outline" asChild>
-            <Link href="/auth/signin">
-              Opnieuw proberen
-            </Link>
-          </Button>
-        </CardContent>
-      </Card>
+      <Suspense fallback={
+        <Card>
+          <CardHeader>
+            <CardTitle>Inloggen mislukt</CardTitle>
+            <CardDescription>Laden...</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            <Button asChild>
+              <Link href="/">
+                Terug naar Dashboard
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="/auth/signin">
+                Opnieuw proberen
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      }>
+        <ErrorContent />
+      </Suspense>
     </div>
   )
 } 
