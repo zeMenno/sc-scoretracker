@@ -60,7 +60,7 @@ export function TeamCard({ id, name, score, rank, color, isAuthenticated }: Team
 
   return (
     <Card className="w-full">
-      <CardHeader className="py-4">
+      <CardHeader className="py-2 px-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div 
@@ -72,7 +72,7 @@ export function TeamCard({ id, name, score, rank, color, isAuthenticated }: Team
             </div>
             <CardTitle className="text-lg font-bold">{name}</CardTitle>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {rank <= 3 && (
               <div className="flex items-center gap-2">
                 <Trophy className={`h-5 w-5 ${getTrophyColor(rank)}`} />
