@@ -53,11 +53,11 @@ export function EventForm({ teamId }: EventFormProps) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <label htmlFor="description" className="text-sm font-medium">
-          Event Description
+          Spel Beschrijving
         </label>
         <Textarea
           id="description"
-          placeholder="Describe the event"
+          placeholder="Beschrijf het spel"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
@@ -65,12 +65,12 @@ export function EventForm({ teamId }: EventFormProps) {
       </div>
       <div className="space-y-2">
         <label htmlFor="points" className="text-sm font-medium">
-          Points
+          Punten
         </label>
         <Input
           id="points"
           type="number"
-          placeholder="Enter points (positive or negative)"
+          placeholder="Voer punten in (positief of negatief)"
           value={points}
           onChange={(e) => setPoints(e.target.value)}
           required
@@ -80,12 +80,12 @@ export function EventForm({ teamId }: EventFormProps) {
         {isSubmitting ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Adding...
+            Toevoegen...
           </>
         ) : (
           <>
             <PlusCircle className="mr-2 h-4 w-4" />
-            Add Event
+            Toevoegen
           </>
         )}
       </Button>

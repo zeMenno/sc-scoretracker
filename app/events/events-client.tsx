@@ -68,9 +68,9 @@ export function EventsClient({ initialSession, initialTeams, initialEvents }: Ev
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Events</CardTitle>
+              <CardTitle>Spellen</CardTitle>
               <CardDescription>
-                Overzicht van alle events en hun impact op de scores
+                Overzicht van alle spellen en hun impact op de scores
               </CardDescription>
             </div>
             <Select value={selectedTeam} onValueChange={setSelectedTeam}>
@@ -97,7 +97,7 @@ export function EventsClient({ initialSession, initialTeams, initialEvents }: Ev
                   onClick={() => handleSort("description")}
                 >
                   <div className="flex items-center">
-                    Event
+                    Spel
                     {sortField === "description" && (
                       <ArrowUpDown className="ml-2 h-4 w-4" />
                     )}

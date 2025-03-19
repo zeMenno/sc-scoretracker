@@ -14,13 +14,13 @@ export default function ExportEventsPage() {
       const link = document.createElement("a")
       const url = URL.createObjectURL(blob)
       link.setAttribute("href", url)
-      link.setAttribute("download", `events-${new Date().toISOString().split("T")[0]}.csv`)
+      link.setAttribute("download", `spellen-${new Date().toISOString().split("T")[0]}.csv`)
       link.style.visibility = "hidden"
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
     } catch (error) {
-      console.error("Failed to export events:", error)
+      console.error("Failed to export spells:", error)
     }
   }
 
@@ -33,9 +33,9 @@ export default function ExportEventsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Exporteer Events</CardTitle>
+          <CardTitle>Exporteer Spellen</CardTitle>
           <CardDescription>
-            Download een CSV bestand met alle events en hun details
+            Download een CSV bestand met alle spellen en hun details
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -14,13 +14,13 @@ export default function ExportTeamsPage() {
       const link = document.createElement("a")
       const url = URL.createObjectURL(blob)
       link.setAttribute("href", url)
-      link.setAttribute("download", `teams-${new Date().toISOString().split("T")[0]}.csv`)
+      link.setAttribute("download", `tribes-${new Date().toISOString().split("T")[0]}.csv`)
       link.style.visibility = "hidden"
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
     } catch (error) {
-      console.error("Failed to export teams:", error)
+      console.error("Failed to export tribes:", error)
     }
   }
 
@@ -33,9 +33,9 @@ export default function ExportTeamsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Exporteer Teams</CardTitle>
+          <CardTitle>Exporteer Tribes</CardTitle>
           <CardDescription>
-            Download een CSV bestand met alle teams en hun scores
+            Download een CSV bestand met alle tribes en hun scores
           </CardDescription>
         </CardHeader>
         <CardContent>

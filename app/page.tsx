@@ -43,31 +43,31 @@ export default async function Home() {
                   <DropdownMenuItem asChild>
                     <Link href="/teams/new">
                       <PlusCircle className="mr-2 h-4 w-4" />
-                      Nieuw Team
+                      Nieuwe Tribe
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/events/new">
                       <Award className="mr-2 h-4 w-4" />
-                      Multi-team Event
+                      Multi-tribe Spel
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/events">
                       <List className="mr-2 h-4 w-4" />
-                      Manage Events
+                      Beheer Spellen
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/export/teams">
                       <Download className="mr-2 h-4 w-4" />
-                      Export Teams
+                      Export Tribes
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/export/events">
                       <Download className="mr-2 h-4 w-4" />
-                      Export Events
+                      Exporteer Spellen
                     </Link>
                   </DropdownMenuItem>
                   {session.user.email === "mfesevur@gmail.com" && <ClearDatabaseButton />}
@@ -86,7 +86,7 @@ export default async function Home() {
                 <Button variant="outline" asChild>
                   <Link href="/events">
                     <History className="mr-2 h-4 w-4" />
-                    Events
+                    Spellen
                   </Link>
                 </Button>
                 <LoginButton />
@@ -102,7 +102,7 @@ export default async function Home() {
                     <DropdownMenuItem asChild>
                       <Link href="/events">
                         <History className="mr-2 h-4 w-4" />
-                        Events
+                        Spellen
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
@@ -122,20 +122,20 @@ export default async function Home() {
       {teams.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <Trophy className="h-12 w-12 text-muted-foreground mb-4" />
-          <h2 className="text-xl font-semibold">Nog geen teams</h2>
-          <p className="text-muted-foreground mb-4">Voeg je eerste team toe om scores bij te houden</p>
+          <h2 className="text-xl font-semibold">Nog geen tribes</h2>
+          <p className="text-muted-foreground mb-4">Voeg je eerste tribe toe om scores bij te houden</p>
           {session && (
             <Button asChild>
               <Link href="/teams/new">
                 <PlusCircle className="mr-2 h-4 w-4" />
-                Nieuw Team
+                Nieuwe Tribe
               </Link>
             </Button>
           )}
         </div>
       ) : (
         <div className="space-y-4 w-full">
-          <h2 className="text-xl font-semibold">Scores</h2>
+          <h2 className="text-xl font-semibold">Tribes</h2>
           <div className="flex flex-col w-full gap-2">
             {teams.map((team, index) => (
               <TeamCard 

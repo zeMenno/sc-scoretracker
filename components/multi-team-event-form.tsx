@@ -31,7 +31,7 @@ export function MultiTeamEventForm({ teams }: MultiTeamEventFormProps) {
     // Check if any selected team has no points value
     const hasEmptyPoints = selectedTeamPoints.some((tp) => tp.points === undefined || tp.points === null)
     if (hasEmptyPoints) {
-      toast.error("Vul punten in voor alle geselecteerde teams")
+      toast.error("Vul punten in voor alle geselecteerde tribes")
       return
     }
 
@@ -48,7 +48,7 @@ export function MultiTeamEventForm({ teams }: MultiTeamEventFormProps) {
     if (result.error) {
       toast.error(result.error)
     } else {
-      toast.success(`Event toegevoegd aan ${selectedTeamPoints.length} teams`)
+      toast.success(`Spel toegevoegd aan ${selectedTeamPoints.length} tribes`)
       setDescription("")
       setSelectedTeamPoints([])
     }
@@ -58,20 +58,20 @@ export function MultiTeamEventForm({ teams }: MultiTeamEventFormProps) {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
         <div>
-          <h3 className="text-lg font-medium mb-2">Selecteer teams en punten</h3>
+          <h3 className="text-lg font-medium mb-2">Selecteer tribes en punten</h3>
           <TeamSelector teams={teams} onChange={setSelectedTeamPoints} />
           {selectedTeamPoints.length > 0 && (
-            <p className="text-sm text-muted-foreground mt-2">{selectedTeamPoints.length} teams geselecteerd</p>
+            <p className="text-sm text-muted-foreground mt-2">{selectedTeamPoints.length} tribes geselecteerd</p>
           )}
         </div>
 
         <div className="space-y-2">
           <label htmlFor="description" className="text-sm font-medium">
-            Event Beschrijving
+            Spel Beschrijving
           </label>
           <Textarea
             id="description"
-            placeholder="Beschrijf het event"
+            placeholder="Beschrijf het spel"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
@@ -88,7 +88,7 @@ export function MultiTeamEventForm({ teams }: MultiTeamEventFormProps) {
         ) : (
           <>
             <PlusCircle className="mr-2 h-4 w-4" />
-            Event toevoegen aan {selectedTeamPoints.length} teams
+            Spel toevoegen aan {selectedTeamPoints.length} tribes
           </>
         )}
       </Button>

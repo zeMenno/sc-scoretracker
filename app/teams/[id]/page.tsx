@@ -48,12 +48,12 @@ export default async function TeamPage({ params }: PageProps) {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-2xl">{team.name}</CardTitle>
-              <CardDescription>Team Details</CardDescription>
+              <CardDescription>Tribe Details</CardDescription>
             </div>
             <div className="flex items-center gap-2">
               <Trophy className="h-5 w-5 text-yellow-500" />
               <span className="text-2xl font-bold">{team.score}</span>
-              <span className="text-muted-foreground">points</span>
+              <span className="text-muted-foreground">punten</span>
             </div>
           </div>
         </CardHeader>
@@ -62,8 +62,8 @@ export default async function TeamPage({ params }: PageProps) {
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Nieuw Event</CardTitle>
-            <CardDescription>Voeg een nieuw event toe aan het toernooi</CardDescription>
+            <CardTitle>Nieuw Spel</CardTitle>
+            <CardDescription>Voeg een nieuw spel toe aan het kamp</CardDescription>
           </CardHeader>
           <CardContent>
             <form action={createEventAction} className="space-y-4">
@@ -78,7 +78,7 @@ export default async function TeamPage({ params }: PageProps) {
               </div>
               <Button type="submit">
                 <PlusCircle className="mr-2 h-4 w-4" />
-                Event Toevoegen
+                Spel Toevoegen
               </Button>
             </form>
           </CardContent>
@@ -86,11 +86,11 @@ export default async function TeamPage({ params }: PageProps) {
 
         <Card>
           <CardHeader>
-            <CardTitle>Event Geschiedenis</CardTitle>
-            <CardDescription>Recente events voor dit team</CardDescription>
+            <CardTitle>Spel Geschiedenis</CardTitle>
+            <CardDescription>Recente spellen voor deze tribe</CardDescription>
           </CardHeader>
           <CardContent>
-            <EventList events={events} />
+            <EventList spellen={events} />
           </CardContent>
         </Card>
       </div>

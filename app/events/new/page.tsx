@@ -16,8 +16,8 @@ export default async function NewMultiTeamEventPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Event toevoegen aan meerdere teams</CardTitle>
-          <CardDescription>Voeg een event toe aan meerdere teams tegelijk</CardDescription>
+          <CardTitle>Spel toevoegen aan meerdere tribes</CardTitle>
+          <CardDescription>Voeg een spel toe aan meerdere tribes tegelijk</CardDescription>
         </CardHeader>
         <CardContent>
           <MultiTeamEventForm teams={teams} />

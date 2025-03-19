@@ -7,19 +7,21 @@ import { format } from "date-fns"
 import { nl } from "date-fns/locale"
 
 interface EventListProps {
-  events: Event[]
+  spellen: Event[]
 }
 
-export function EventList({ events }: EventListProps) {
-  if (events.length === 0) {
+export function EventList({ spellen }: EventListProps) {
+  if (spellen.length === 0) {
     return (
-      <div className="text-center py-6 text-muted-foreground">No events yet. Add an event to update the score.</div>
+      <div className="text-center text-muted-foreground py-4">
+        Nog geen spellen
+      </div>
     )
   }
 
   return (
     <div className="space-y-4">
-      {events.map((event) => (
+      {spellen.map((event) => (
         <Card key={event.id}>
           <CardHeader className="p-4 pb-2">
             <div className="flex items-center justify-between">
@@ -31,7 +33,7 @@ export function EventList({ events }: EventListProps) {
                   <Minus className="h-4 w-4 text-red-500 mr-1" />
                 )}
                 <span className={Number(event.points) > 0 ? "text-green-500" : "text-red-500"}>
-                  {event.points} points
+                  {event.points} punten
                 </span>
               </div>
             </div>

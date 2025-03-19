@@ -29,7 +29,7 @@ export function TeamCard({ id, name, score, rank, color, isAuthenticated }: Team
     try {
       await deleteTeamAction(formData)
     } catch (error) {
-      console.error("Failed to delete team:", error)
+      console.error("Failed to delete tribe:", error)
     }
   }
 
@@ -81,7 +81,7 @@ export function TeamCard({ id, name, score, rank, color, isAuthenticated }: Team
                     <DropdownMenuItem asChild>
                       <Link href={`/teams/${id}`} className="flex items-center gap-2">
                         <PlusCircle className="w-4 h-4" />
-                        Event Toevoegen
+                        Spel Toevoegen
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleDelete} className="text-destructive">

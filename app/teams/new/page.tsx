@@ -25,8 +25,8 @@ export default async function NewTeamPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Nieuw Team</CardTitle>
-          <CardDescription>Voeg een nieuw team toe aan het toernooi</CardDescription>
+          <CardTitle>Nieuwe Tribe</CardTitle>
+          <CardDescription>Voeg een nieuwe tribe toe aan het kamp</CardDescription>
         </CardHeader>
         <CardContent>
           <NewTeamForm />
@@ -35,8 +35,8 @@ export default async function NewTeamPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Bestaande Teams</CardTitle>
-          <CardDescription>Overzicht van alle teams in het toernooi</CardDescription>
+          <CardTitle>Bestaande Tribes</CardTitle>
+          <CardDescription>Overzicht van alle tribes in het toernooi</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">

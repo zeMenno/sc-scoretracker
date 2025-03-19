@@ -29,7 +29,7 @@ export default async function EditTeamPage({ params }: EditTeamPageProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle>Update Team Score</CardTitle>
+          <CardTitle>Update Tribe Score</CardTitle>
           <CardDescription>Update the score for {team.name}</CardDescription>
         </CardHeader>
         <CardContent>
