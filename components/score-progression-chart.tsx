@@ -44,8 +44,7 @@ export function ScoreProgressionChart({ teams, events }: ScoreProgressionChartPr
   }
 
   const chartData = Object.values(dailyScores);
-  console.log(chartData); // Log chart data for debugging
-
+  
   return (
     <div className="w-full h-[400px] mt-8">
       <ResponsiveContainer width="100%" height="100%">
