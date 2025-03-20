@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Trophy, PlusCircle, Trash2, MoreVertical } from "lucide-react"
 import { deleteTeamAction } from "@/lib/actions"
-import { animated } from '@react-spring/web'
 import { useCountUp } from '@/hooks/useCountUp'
 import {
   DropdownMenu,

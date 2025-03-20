@@ -32,6 +32,18 @@ export function EventsClient({ initialSession, initialTeams, initialEvents }: Ev
   const [editingEventId, setEditingEventId] = useState<string | null>(null)
   const [events, setEvents] = useState<EventWithTeam[]>(initialEvents)
 
+  const handleDelete = async (eventId: string) => {
+    try {
+      const formData = new FormData();
+      formData.append("id", eventId);
+      await deleteEventAction(formData);
+      // Update the local state by removing the deleted event
+      setEvents(events.filter(event => event.id !== eventId));
+    } catch (error) {
+      console.error('Error deleting event:', error);
+    }
+  };
+
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc")
@@ -217,12 +229,14 @@ export function EventsClient({ initialSession, initialTeams, initialEvents }: Ev
                   {initialSession && <TableCell>{event.creatorName}</TableCell>}
                   {initialSession && (
                     <TableCell>
-                      <form action={deleteEventAction}>
-                        <input type="hidden" name="id" value={event.id} />
-                        <Button variant="ghost" size="icon" type="submit" className="h-8 w-8 text-destructive">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </form>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={() => handleDelete(event.id)} 
+                        className="h-8 w-8 text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </TableCell>
                   )}
                 </TableRow>

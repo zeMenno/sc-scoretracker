@@ -123,6 +123,7 @@ export async function deleteEventAction(formData: FormData) {
     const teamId = await deleteEvent(id)
     revalidatePath(`/teams/${teamId}`)
     revalidatePath("/")
+    revalidatePath("/events")
   } catch (error) {
     throw new Error("Fout bij het verwijderen van spel")
   }
