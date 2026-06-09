@@ -26,7 +26,7 @@ export const authOptions: NextAuthOptions = {
         console.log('No email provided')
         return false
       }
-      const isAllowed = ALLOWED_EMAILS.includes(user.email)
+      const isAllowed = ALLOWED_EMAILS?.includes(user.email) ?? false
       console.log('Email allowed:', isAllowed)
       return isAllowed
     },

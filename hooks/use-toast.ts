@@ -1,9 +1,12 @@
 "use client"
 
 // Inspired by react-hot-toast library
-import type * as React from "react"
+import * as React from "react"
 
-import type { ToastActionElement, ToastProps } from "@/components/ui/toast"
+import type {
+  ToastActionElement,
+  ToastProps,
+} from "@/components/ui/toast"
 
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
@@ -82,14 +85,14 @@ export const reducer = (state: State, action: Action): State => {
     case "UPDATE_TOAST":
       return {
         ...state,
-        toasts: state.toasts.map((t) => (t.id === action.toast.id ? { ...t, ...action.toast } : t)),
+        toasts: state.toasts.map((t) =>
+          t.id === action.toast.id ? { ...t, ...action.toast } : t
+        ),
       }
 
     case "DISMISS_TOAST": {
       const { toastId } = action
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
       if (toastId) {
         addToRemoveQueue(toastId)
       } else {
@@ -106,7 +109,7 @@ export const reducer = (state: State, action: Action): State => {
                 ...t,
                 open: false,
               }
-            : t,
+            : t
         ),
       }
     }
@@ -166,56 +169,24 @@ function toast({ ...props }: Toast) {
   }
 }
 
-// function useToast() {
-//   const [state, setState] = React.useState<State>(memoryState)
+function useToast() {
+  const [state, setState] = React.useState<State>(memoryState)
 
-//   React.useEffect(() => {
-//     listeners.push(setState)
-//     return () => {
-//       const index = listeners.indexOf(setState)
-//       if (index > -1) {
-//         listeners.splice(index, 1)
-//       }
-//     }
-//   }, [state])
-
-//   return {
-//     ...state,
-//     toast,
-//     dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
-//   }
-// }
-
-import { useState, useEffect } from "react"
-
-type ToastType = {
-  title: string
-  description: string
-  variant?: "default" | "destructive"
-}
-
-export function useToast() {
-  const [toast, setToast] = useState<ToastType | null>(null)
-  const [isVisible, setIsVisible] = useState(false)
-
-  useEffect(() => {
-    if (toast) {
-      setIsVisible(true)
-      const timer = setTimeout(() => {
-        setIsVisible(false)
-        setTimeout(() => setToast(null), 300) // Allow time for exit animation
-      }, 5000)
-      return () => clearTimeout(timer)
+  React.useEffect(() => {
+    listeners.push(setState)
+    return () => {
+      const index = listeners.indexOf(setState)
+      if (index > -1) {
+        listeners.splice(index, 1)
+      }
     }
-  }, [toast])
+  }, [state])
 
   return {
-    toast: (props: ToastType) => setToast(props),
-    currentToast: toast,
-    isVisible,
-    dismiss: () => setIsVisible(false),
+    ...state,
+    toast,
+    dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
   }
 }
 
-export { toast }
-
+export { useToast, toast }

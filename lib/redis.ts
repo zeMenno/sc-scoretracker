@@ -118,6 +118,12 @@ export async function getTeamScore(teamId: string) {
   return events.reduce((total, event) => total + Number(event.points), 0)
 }
 
+export async function getTeamLastEventPoints(teamId: string): Promise<number> {
+  const events = await getTeamEvents(teamId)
+  if (!events.length) return 0
+  return Number(events[0].points)
+}
+
 export async function createEvent(teamId: string, description: string, points: number, creatorName: string) {
   // Generate a unique ID
   const id = crypto.randomUUID()

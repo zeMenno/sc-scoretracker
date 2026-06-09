@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
 import type { Team, Event } from "@/lib/redis"
 import { format, startOfDay, subDays } from "date-fns"
@@ -17,6 +18,9 @@ interface ChartData {
 }
 
 export function ScoreProgressionChart({ teams, events }: ScoreProgressionChartProps) {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
   const sortedEvents = [...events].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
   const dailyScores: { [key: string]: ChartData } = {};
 
@@ -44,10 +48,14 @@ export function ScoreProgressionChart({ teams, events }: ScoreProgressionChartPr
   }
 
   const chartData = Object.values(dailyScores);
+
+  if (!mounted || chartData.length === 0) {
+    return null
+  }
   
   return (
-    <div className="w-full h-[400px] mt-8">
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="w-full h-[400px] mt-8 min-w-0">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
         <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="timestamp" angle={-45} textAnchor="end" height={80} />

@@ -7,8 +7,8 @@ import { Toaster } from "sonner"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Summercamp 2025",
-  description: "Scoreboard for Summercamp 2025 - Rise Up",
+  title: "Summercamp 2026",
+  description: "Scoreboard for Summercamp   2026 - Revived",
 }
 
 export default function RootLayout({
@@ -25,7 +25,3 @@ export default function RootLayout({
     </html>
   )
 }
-
-
-
-import './globals.css'

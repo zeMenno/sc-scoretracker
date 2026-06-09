@@ -29,23 +29,23 @@ export function EventForm({ teamId }: EventFormProps) {
     formData.append("description", description)
     formData.append("points", points)
 
-    const result = await createEventAction(formData)
-
-    setIsSubmitting(false)
-
-    if (result.error) {
-      toast({
-        title: "Error",
-        description: result.error,
-        variant: "destructive",
-      })
-    } else {
+    try {
+      await createEventAction(formData)
       toast({
         title: "Success",
         description: "Event added successfully",
       })
       setDescription("")
       setPoints("")
+    } catch (error) {
+      toast({
+        title: "Error",
+        description:
+          error instanceof Error ? error.message : "Failed to add event",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
