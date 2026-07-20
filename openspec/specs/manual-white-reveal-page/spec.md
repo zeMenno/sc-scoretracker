@@ -1,18 +1,18 @@
-## Purpose
+# Manual White Reveal Page
 
-Presenter-controlled standings reveal at `/reveal/manual` — spacebar-paced, dark-stage styling shared with `/reveal`, without auto-timed cinematic choreography.
+Minimal, presenter-controlled standings reveal on a plain white fullscreen background, separate from the cinematic `/reveal` page.
 
 ## Requirements
 
 ### Requirement: Manual white reveal route
 
-The system SHALL expose a dedicated `/reveal/manual` page for a presenter-controlled standings reveal on a dark fullscreen stage matching the cinematic `/reveal` visual language, separate from the auto-timed `/reveal` page.
+The system SHALL expose a dedicated `/reveal/manual` page for a minimal, presenter-controlled standings reveal on a plain white fullscreen background, separate from the cinematic `/reveal` page.
 
 #### Scenario: Page loads at manual reveal route
 
 - **WHEN** a user navigates to `/reveal/manual`
-- **THEN** the page renders fullscreen with a dark background consistent with `/reveal`
-- **AND** no auto-timed timeline, camera motion, or shockwave choreography runs
+- **THEN** the page renders fullscreen with a white background and dark readable text
+- **AND** no cinematic effects, particles, camera motion, or timeline animation run
 - **AND** no team standings are visible until the operator advances the reveal
 
 #### Scenario: Page accepts team data
@@ -59,26 +59,19 @@ The manual reveal page SHALL reveal teams one step at a time in ascending rank o
 
 ### Requirement: Plain standings presentation
 
-Revealed teams SHALL be displayed using the same premium `RevealCard` score cards and dark-stage styling as the cinematic reveal page, with per-step visual feedback on each spacebar advance.
+Revealed teams SHALL be displayed in a simple, functional layout without dramatic visual effects.
 
-#### Scenario: Card content
+#### Scenario: Row content
 
 - **WHEN** a team is revealed
-- **THEN** it displays as a glassmorphism score card with position number, team name, team color accent, and total score
-- **AND** the total score animates from zero to the final value on reveal
+- **THEN** its row displays rank number, team name, team color accent, and total score
+- **AND** scores are shown as static values (no count-up animation)
 - **AND** no delta or round-change score is displayed
 
-#### Scenario: Particle burst on each reveal step
+#### Scenario: No cinematic layers
 
-- **WHEN** a team card is revealed via spacebar
-- **THEN** a colored particle burst emits at the card position in that team's color
-- **AND** particles are removed after animation completes
-
-#### Scenario: Winner screen glow on final step
-
-- **WHEN** rank #1 is revealed (including the combined #2+#1 penultimate press)
-- **THEN** a large radial screen glow appears in the #1 team's color
-- **AND** the glow fades in and settles without requiring additional operator input
+- **WHEN** the manual reveal page is active
+- **THEN** no particle effects, shockwaves, screen shake, gradient mesh, light sweeps, or simulated camera movement are present
 
 #### Scenario: Operator hint before first reveal
 
@@ -117,12 +110,11 @@ The manual reveal page SHALL work for any number of teams without manual configu
 
 ### Requirement: Manual reveal code organization
 
-Manual reveal functionality SHALL reuse shared reveal presentation modules while remaining independent of the cinematic auto-play timeline.
+Manual reveal functionality SHALL be isolated from the cinematic reveal implementation.
 
 #### Scenario: Module structure
 
 - **WHEN** the manual reveal feature is implemented
 - **THEN** the route lives at `app/reveal/manual`
 - **AND** UI components live under `components/reveal/manual`
-- **AND** the implementation MAY reuse `RevealCard`, `RevealLeaderboard`, `ParticleEngine`, `reveal.css`, and lightweight Anime.js step helpers
-- **AND** the implementation does not depend on `MasterTimeline` or auto-play choreography
+- **AND** the implementation does not depend on `MasterTimeline`, `ParticleEngine`, or other cinematic reveal animation modules

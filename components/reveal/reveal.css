@@ -345,6 +345,54 @@
   pointer-events: none;
 }
 
+/* Manual reveal: fuller frame + TV-readable type (~5% inset all sides) */
+.reveal-root--manual .reveal-leaderboard {
+  padding: 5vh 0;
+  box-sizing: border-box;
+}
+
+.reveal-root--manual .reveal-cards-stack {
+  width: 90vw;
+  max-height: 90vh;
+}
+
+.reveal-root--manual .reveal-card {
+  height: 104px;
+  border-radius: 18px;
+}
+
+.reveal-root--manual .reveal-card-glow {
+  border-radius: 20px;
+}
+
+.reveal-root--manual .reveal-card-inner {
+  padding: 0 1.75rem;
+  gap: 1.35rem;
+}
+
+.reveal-root--manual .reveal-card-rank {
+  font-size: clamp(1.75rem, 4.5vmin, 2.75rem);
+  width: 3.25rem;
+}
+
+.reveal-root--manual .reveal-card-accent {
+  width: 6px;
+  height: 64px;
+}
+
+.reveal-root--manual .reveal-card-name {
+  font-size: clamp(1.5rem, 4vmin, 2.5rem);
+}
+
+.reveal-root--manual .reveal-card-total {
+  font-size: clamp(1.6rem, 4.2vmin, 2.6rem);
+}
+
+.reveal-root--manual .manual-reveal-hint {
+  font-size: clamp(1.25rem, 2.8vmin, 1.75rem);
+  bottom: 5%;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal-bg {
     animation: none;

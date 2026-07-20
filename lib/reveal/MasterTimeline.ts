@@ -11,12 +11,24 @@ import { addTopThreeReveal } from "./WinnerSequence"
 export const CARD_HEIGHT = 72
 export const CARD_GAP = 10
 
-export function stackHeight(teamCount: number): number {
-  return teamCount * CARD_HEIGHT + (teamCount - 1) * CARD_GAP
+/** Larger cards for TV / manual reveal readability */
+export const MANUAL_CARD_HEIGHT = 104
+export const MANUAL_CARD_GAP = 14
+
+export function stackHeight(
+  teamCount: number,
+  cardHeight: number = CARD_HEIGHT,
+  cardGap: number = CARD_GAP,
+): number {
+  return teamCount * cardHeight + (teamCount - 1) * cardGap
 }
 
-export function cardTopOffset(index: number): number {
-  return index * (CARD_HEIGHT + CARD_GAP)
+export function cardTopOffset(
+  index: number,
+  cardHeight: number = CARD_HEIGHT,
+  cardGap: number = CARD_GAP,
+): number {
+  return index * (cardHeight + cardGap)
 }
 
 interface MasterTimelineOptions {

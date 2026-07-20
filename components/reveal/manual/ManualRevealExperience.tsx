@@ -2,13 +2,13 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import { useRevealScale } from "@/hooks/reveal/useRevealScale"
 import {
   animateCardReveal,
   animateWinnerGlow,
   getNewlyRevealedIndices,
   initManualRevealCards,
 } from "@/lib/reveal/manualRevealStep"
+import { MANUAL_CARD_GAP, MANUAL_CARD_HEIGHT } from "@/lib/reveal/MasterTimeline"
 import { ParticleEngine } from "@/lib/reveal/ParticleEngine"
 import type { RevealTeam } from "@/lib/reveal/types"
 import { ArenaGrid } from "../ArenaGrid"
@@ -28,7 +28,6 @@ function nextRevealedCount(current: number, total: number): number {
 }
 
 export function ManualRevealExperience({ teams }: ManualRevealExperienceProps) {
-  const scale = useRevealScale()
   const [revealedCount, setRevealedCount] = useState(0)
   const total = teams.length
 
@@ -149,12 +148,17 @@ export function ManualRevealExperience({ teams }: ManualRevealExperienceProps) {
   }
 
   return (
-    <div className="reveal-root">
-      <CameraController scale={scale}>
+    <div className="reveal-root reveal-root--manual">
+      <CameraController scale={1}>
         <RevealBackground ref={backgroundRef} />
         <ArenaGrid />
         <div ref={winnerGlowRef} className="reveal-winner-glow" aria-hidden />
-        <RevealLeaderboard ref={leaderboardRef} teams={teams} />
+        <RevealLeaderboard
+          ref={leaderboardRef}
+          teams={teams}
+          cardHeight={MANUAL_CARD_HEIGHT}
+          cardGap={MANUAL_CARD_GAP}
+        />
       </CameraController>
 
       <div ref={particlesRef} className="reveal-particles" aria-hidden />

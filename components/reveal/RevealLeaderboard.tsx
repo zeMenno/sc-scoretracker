@@ -1,7 +1,12 @@
 "use client"
 
 import { forwardRef, useImperativeHandle, useRef } from "react"
-import { cardTopOffset, stackHeight } from "@/lib/reveal/MasterTimeline"
+import {
+  CARD_GAP,
+  CARD_HEIGHT,
+  cardTopOffset,
+  stackHeight,
+} from "@/lib/reveal/MasterTimeline"
 import type { RevealTeam } from "@/lib/reveal/types"
 import { RevealCard, type RevealCardHandle } from "./RevealCard"
 
@@ -11,10 +16,15 @@ export interface RevealLeaderboardHandle {
 
 interface RevealLeaderboardProps {
   teams: RevealTeam[]
+  cardHeight?: number
+  cardGap?: number
 }
 
 export const RevealLeaderboard = forwardRef<RevealLeaderboardHandle, RevealLeaderboardProps>(
-  function RevealLeaderboard({ teams }, ref) {
+  function RevealLeaderboard(
+    { teams, cardHeight = CARD_HEIGHT, cardGap = CARD_GAP },
+    ref,
+  ) {
     const containerRef = useRef<HTMLDivElement>(null)
     const cardHandles = useRef<(RevealCardHandle | null)[]>([])
 
@@ -25,7 +35,7 @@ export const RevealLeaderboard = forwardRef<RevealLeaderboardHandle, RevealLeade
           .map((h) => h.getRefs()),
     }))
 
-    const height = stackHeight(teams.length)
+    const height = stackHeight(teams.length, cardHeight, cardGap)
 
     return (
       <div ref={containerRef} className="reveal-layer reveal-leaderboard">
@@ -40,7 +50,7 @@ export const RevealLeaderboard = forwardRef<RevealLeaderboardHandle, RevealLeade
                 }}
                 team={team}
                 rank={rank}
-                style={{ top: cardTopOffset(index) }}
+                style={{ top: cardTopOffset(index, cardHeight, cardGap), height: cardHeight }}
               />
             )
           })}
